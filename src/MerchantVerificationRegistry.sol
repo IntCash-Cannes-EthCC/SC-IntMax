@@ -14,21 +14,17 @@ import {CrossChainMerchantVerification} from "src/CrossChainMerchantVerification
 contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
     
     // Verification information struct
-    struct VerificationInformation {
+    struct VerificationData {
         uint256 userIdentifier;
         string[] name;
         string nationality;
         bytes intmaxAddress;
         address evmAddress;
-        uint256 timestamp;
-        uint64 sourceChainSelector;
-        bytes32 messageId;
-        bool isVerified;
     }
 
     // Mappings for verification registry
-    mapping(bytes32 => VerificationInformation) public intmaxToVerification;
-    mapping(address => VerificationInformation) public evmToVerification;
+    mapping(bytes32 => VerificationData) public intmaxToVerification;
+    mapping(address => VerificationData) public evmToVerification;
     
     // Mapping to track verified intmax addresses
     mapping(bytes32 => bool) public isIntmaxVerified;
@@ -87,9 +83,9 @@ contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
         address sender = abi.decode(any2EvmMessage.sender, (address));
 
         // Decode the verification data
-        VerificationInformation memory verificationData = abi.decode(
+        VerificationData memory verificationData = abi.decode(
             any2EvmMessage.data,
-            (VerificationInformation)
+            (VerificationData)
         );
 
         // Validate the verification data
@@ -98,16 +94,12 @@ contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
         }
 
         // Create complete verification information with metadata
-        VerificationInformation memory completeVerification = VerificationInformation({
+        VerificationData memory completeVerification = VerificationData({
             userIdentifier: verificationData.userIdentifier,
             name: verificationData.name,
             nationality: verificationData.nationality,
             intmaxAddress: verificationData.intmaxAddress,
-            evmAddress: verificationData.evmAddress,
-            timestamp: verificationData.timestamp,
-            sourceChainSelector: any2EvmMessage.sourceChainSelector,
-            messageId: any2EvmMessage.messageId,
-            isVerified: true
+            evmAddress: verificationData.evmAddress
         });
 
         // Store verification information in both mappings
@@ -172,7 +164,7 @@ contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
      */
     function getVerificationByIntmax(
         bytes calldata intmaxAddress
-    ) external view returns (VerificationInformation memory) {
+    ) external view returns (VerificationData memory) {
         return intmaxToVerification[intmaxAddressToHash(intmaxAddress)];
     }
 
@@ -183,7 +175,7 @@ contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
      */
     function getVerificationByEvm(
         address evmAddress
-    ) external view returns (VerificationInformation memory) {
+    ) external view returns (VerificationData memory) {
         return evmToVerification[evmAddress];
     }
 
@@ -253,7 +245,6 @@ contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
      * @return nationality The user's nationality
      * @return linkedIntmaxAddress The linked intmax address
      * @return linkedEvmAddress The linked EVM address
-     * @return isVerified Whether the user is verified
      */
     function getUserInfo(
         bytes calldata intmaxAddress,
@@ -263,10 +254,9 @@ contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
         string[] memory name,
         string memory nationality,
         bytes memory linkedIntmaxAddress,
-        address linkedEvmAddress,
-        bool isVerified
+        address linkedEvmAddress
     ) {
-        VerificationInformation memory info;
+        VerificationData memory info;
 
         if (evmAddress != address(0)) {
             info = evmToVerification[evmAddress];
@@ -280,9 +270,8 @@ contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
             info.name,
             info.nationality,
             info.intmaxAddress,
-            info.evmAddress,
-            info.isVerified
-        );
+            info.evmAddress
+            );
     }
 
     /**
@@ -296,11 +285,9 @@ contract MerchantVerificationRegistry is CCIPReceiver, Ownable {
         address evmAddress,
         bool verified
     ) external onlyOwner {
-        intmaxToVerification[intmaxAddressToHash(intmaxAddress)].isVerified = verified;
         isIntmaxVerified[intmaxAddressToHash(intmaxAddress)] = verified;
         
         if (evmAddress != address(0)) {
-            evmToVerification[evmAddress].isVerified = verified;
             isEvmVerified[evmAddress] = verified;
         }
     }

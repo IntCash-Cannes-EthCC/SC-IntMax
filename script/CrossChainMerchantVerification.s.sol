@@ -36,7 +36,7 @@ contract DeployCrossChainMerchantVerification is Script {
 
     function run() public {
         // step1();
-        step2(0x02CB960aEaCb8325Da67ee3f34D82B5AC84EB8CB, 0xadF2E96d1E68Ef450E0a6c0a16bF75F37D2217E8);
+        step2(0x59A85C1Ef49FA7DDCbDf11d90B250A1daA3e63d1, 0x98f65D5D44d261031E4B5b65e53efAce2b96a4DC);
     }
 
     function step1() public {
@@ -103,7 +103,7 @@ contract DeployCrossChainMerchantVerification is Script {
             identityVerificationHubV2: selfVerifierHub, // Replace with actual address
             router: 0xb00E95b773528E2Ea724DB06B75113F239D15Dca, // Chainlink CCIP Router Sepolia
             link: 0x32E08557B14FaD8908025619797221281D439071, 
-            scope: 5506059456646081874375161676862705725622742806866384150556180183277789206432
+            scope: 2402919856948960743300941728239605214998686625463561505210619947001268110277
         });
     }
 

@@ -15,25 +15,25 @@ contract ManualVerification is Script {
     string nationality = "FR";
     bytes intmaxAddress = 'address';
 
-    address CROSS = 0x02CB960aEaCb8325Da67ee3f34D82B5AC84EB8CB;
+    address CROSS = 0x59A85C1Ef49FA7DDCbDf11d90B250A1daA3e63d1;
 
 
     function run() public {
         name[0] = "patalo";
-        intmaxAddress= 'address';
+        intmaxAddress= abi.encode("address");
 
         vm.startBroadcast();
 
         // CrossChainMerchantVerification cross = new CrossChainMerchantVerification(address(0x1), 123, router, 0x99604d0e2EfE7ABFb58BdE565b5330Bb46Ab3Dca);
         CrossChainMerchantVerification cross = CrossChainMerchantVerification(CROSS);
 
-        cross.setDestinationReceiver(16015286601757825753, 0xadF2E96d1E68Ef450E0a6c0a16bF75F37D2217E8);
+        cross.setDestinationReceiver(16015286601757825753, 0x98f65D5D44d261031E4B5b65e53efAce2b96a4DC);
 
         console.log("sepolia dest is allowed? ", cross.allowedDestinationChains(16015286601757825753));
 
         IWeth wCelo = IWeth(0x32E08557B14FaD8908025619797221281D439071);
 
-        wCelo.transfer(address(cross), 0.5 ether);
+        wCelo.transfer(address(cross), 5 ether);
 
         cross.manualSendVerification(userIdentifier, name, nationality, intmaxAddress, evmAddress, destinationChainSelector);
     }

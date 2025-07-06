@@ -24,7 +24,7 @@ contract DeployMerchantVerificationRegistry is Script {
     // Authorized senders configuration
     AuthorizedSenderConfig public authorizedSender;
 
-    address private celoSender = 0x02CB960aEaCb8325Da67ee3f34D82B5AC84EB8CB;
+    address private celoSender = 0x59A85C1Ef49FA7DDCbDf11d90B250A1daA3e63d1;
 
     MerchantVerificationRegistry public registry;
 
@@ -168,12 +168,11 @@ contract DeployMerchantVerificationRegistry is Script {
         string[] memory name,
         string memory nationality,
         bytes memory linkedIntmaxAddress,
-        address linkedEvmAddress,
-        bool isVerified
+        address linkedEvmAddress
     ) {
         require(address(registry) != address(0), "Registry not deployed");
         
-        MerchantVerificationRegistry.VerificationInformation memory info = 
+        MerchantVerificationRegistry.VerificationData memory info = 
             registry.getVerificationByIntmax(intmaxAddress);
         
         return (
@@ -181,8 +180,7 @@ contract DeployMerchantVerificationRegistry is Script {
             info.name,
             info.nationality,
             info.intmaxAddress,
-            info.evmAddress,
-            info.isVerified
+            info.evmAddress
         );
     }
 
@@ -194,12 +192,11 @@ contract DeployMerchantVerificationRegistry is Script {
         string[] memory name,
         string memory nationality,
         bytes memory linkedIntmaxAddress,
-        address linkedEvmAddress,
-        bool isVerified
+        address linkedEvmAddress
     ) {
         require(address(registry) != address(0), "Registry not deployed");
         
-        MerchantVerificationRegistry.VerificationInformation memory info = 
+        MerchantVerificationRegistry.VerificationData memory info = 
             registry.getVerificationByEvm(evmAddress);
         
         return (
@@ -207,8 +204,7 @@ contract DeployMerchantVerificationRegistry is Script {
             info.name,
             info.nationality,
             info.intmaxAddress,
-            info.evmAddress,
-            info.isVerified
+            info.evmAddress
         );
     }
 
